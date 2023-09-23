@@ -10,6 +10,9 @@ import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.WritableNativeMap;
 import com.facebook.react.bridge.Promise;
+import android.util.Base64;
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
 
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
@@ -55,7 +58,11 @@ public class RNRSAModule extends ReactContextBaseJavaModule {
 
         try {
           RSA rsa = new RSA();
-          rsa.generate(keySize);
+          KeyPair keyPair = rsa.generateAndReturn(keySize);
+
+          byte[] pub = keyPair.getPublic().getEncoded();
+
+          keys.putString("kpublic", Base64.encodeToString(pub, Base64.DEFAULT));
           keys.putString("public", rsa.getPublicKey());
           keys.putString("private", rsa.getPrivateKey());
           promise.resolve(keys);

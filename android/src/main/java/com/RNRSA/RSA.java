@@ -275,7 +275,7 @@ public class RSA {
         KeyStore keyStore = KeyStore.getInstance("AndroidKeyStore");
         keyStore.load(null);
         KeyStore.PrivateKeyEntry privateKeyEntry = (KeyStore.PrivateKeyEntry) keyStore.getEntry(this.keyTag, null);
-        
+
         if (privateKeyEntry != null) {
             this.privateKey = privateKeyEntry.getPrivateKey();
             this.publicKey = privateKeyEntry.getCertificate().getPublicKey();
@@ -306,6 +306,18 @@ public class RSA {
     public void generate(String keyTag, Context context) throws IOException, NoSuchAlgorithmException, InvalidAlgorithmParameterException, NoSuchProviderException {
         this.generate(keyTag, 2048, context);
     }
+
+    public KeyPair generateAndReturn(int keySize) throws IOException, NoSuchAlgorithmException, InvalidAlgorithmParameterException {
+        KeyPairGenerator kpg = KeyPairGenerator.getInstance(ALGORITHM);
+        kpg.initialize(keySize);
+
+        KeyPair keyPair = kpg.genKeyPair();
+        this.publicKey = keyPair.getPublic();
+        this.privateKey = keyPair.getPrivate();
+
+        return keyPair;
+    }
+
     @TargetApi(18)
     public void generate(String keyTag, int keySize, Context context) throws IOException, NoSuchAlgorithmException, InvalidAlgorithmParameterException, NoSuchProviderException {
 
@@ -401,4 +413,3 @@ public class RSA {
     }
 
 }
-
